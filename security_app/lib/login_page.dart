@@ -109,7 +109,7 @@ class LoginPageState extends State<LoginPage> {
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage(
-                    'assets/security_background.jpg'), // A background image related to home security
+                    'assets/icon/Logo_Esolusindo.png'), // A background image related to home security
                 fit: BoxFit.cover,
               ),
             ),

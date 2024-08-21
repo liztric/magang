@@ -75,7 +75,7 @@ class UserPageContent extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/security_home_bg.jpg'), // Background image
+          image: AssetImage('assets/icon/Logo_Esolusindo.png'), // Background image
           fit: BoxFit.cover,
         ),
       ),
