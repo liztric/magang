@@ -50,7 +50,7 @@
             <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">jeneng</th>
+                    <th scope="col">Nama</th>
                     <th scope="col">Alamat</th>
                     <th scope="col">Deskripsi</th>
                     <th scope="col">Category</th>
