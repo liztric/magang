@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,6 +23,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -48,9 +50,9 @@
             <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Nama</th>
+                    <th scope="col">jeneng</th>
                     <th scope="col">Alamat</th>
-                    <th scope="col">Deskripsi</th>                    
+                    <th scope="col">Deskripsi</th>
                     <th scope="col">Category</th>
                     <th scope="col">Tanggal dan Waktu</th>
                     <th scope="col">Aksi</th> <!-- Kolom baru untuk aksi -->
@@ -71,7 +73,7 @@
 
         let tbody = document.getElementById("tbody");
 
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             getData();
         });
 
@@ -111,14 +113,14 @@
 
         function deleteData(id) {
             fetch(`https://esolusindosecurity-default-rtdb.firebaseio.com/laporan/${id}.json?auth=${authKey}`, {
-                method: "DELETE"
-            })
-            .then(() => {
-                getData(); // Refresh the data
-            })
-            .catch((error) => {
-                console.error('Error deleting data:', error);
-            });
+                    method: "DELETE"
+                })
+                .then(() => {
+                    getData(); // Refresh the data
+                })
+                .catch((error) => {
+                    console.error('Error deleting data:', error);
+                });
         }
 
         function createData() {
@@ -131,22 +133,23 @@
                 waktu: now.toTimeString().split(' ')[0], // Simpan waktu saja dalam format HH:MM:SS
                 category: document.getElementById("category").value
             };
-            
+
             fetch(databaseUrl, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            })
-            .then(() => {
-                document.getElementById("registerForm").reset();
-                getData(); // Refresh the data
-            })
-            .catch((error) => {
-                console.error('Error creating data:', error);
-            });
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(() => {
+                    document.getElementById("registerForm").reset();
+                    getData(); // Refresh the data
+                })
+                .catch((error) => {
+                    console.error('Error creating data:', error);
+                });
         }
     </script>
 </body>
+
 </html>
