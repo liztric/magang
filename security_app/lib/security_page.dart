@@ -33,7 +33,8 @@ class _SecurityPageState extends State<SecurityPage> {
       final laporanData =
           Map<String, dynamic>.from(event.snapshot.value as Map);
       List<Map<String, dynamic>> laporanList = laporanData.entries.map((entry) {
-        return Map<String, dynamic>.from(entry.value as Map);
+        // Menggunakan key Firebase sebagai laporanId
+        return {'id': entry.key, ...Map<String, dynamic>.from(entry.value as Map)};
       }).toList();
 
       // Urutkan laporan berdasarkan tanggal terbaru
@@ -127,7 +128,7 @@ class _SecurityPageState extends State<SecurityPage> {
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
                   'Laporan Terkini',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
@@ -138,7 +139,7 @@ class _SecurityPageState extends State<SecurityPage> {
                   itemCount: _laporanList.length,
                   itemBuilder: (context, index) {
                     final laporan = _laporanList[index];
-                    final laporanId = laporan['id']; // Assuming 'id' is a field
+                    final laporanId = laporan['id']; // Menggunakan key sebagai ID
 
                     return Card(
                       margin: const EdgeInsets.symmetric(

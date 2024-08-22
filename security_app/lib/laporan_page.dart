@@ -13,7 +13,7 @@ class LaporanPage extends StatefulWidget {
 }
 
 class _LaporanPageState extends State<LaporanPage> {
-  String _selectedCategory = 'Maling';
+  String _selectedCategory = 'Emergency';
   final TextEditingController _deskripsiController = TextEditingController();
   String _alamat = '';
   String _nama = '';
@@ -275,6 +275,7 @@ class _LaporanPageState extends State<LaporanPage> {
                         });
                       },
                       items: <String>[
+                        'Emergency',
                         'Maling',
                         'Kebakaran',
                         'Butuh Pertolongan',
@@ -319,36 +320,37 @@ class _LaporanPageState extends State<LaporanPage> {
                   Expanded(
                     child: Align(
                       alignment: Alignment.center,
-                      child: Container(
-                        width: 150,
-                        height: 150,
-                        child: ElevatedButton(
-                          onPressed: _showConfirmationDialog,
-                          style: ElevatedButton.styleFrom(
-                            shape: const CircleBorder(),
-                            backgroundColor: Colors.redAccent[700],
-                            padding: const EdgeInsets.all(20),
-                            elevation: 5,
+                      child: GestureDetector(
+                        onTap: _showConfirmationDialog,
+                        child: Container(
+                          width: 150,
+                          height: 150,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: RadialGradient(
+                              colors: [
+                                Colors.redAccent.withOpacity(0.6),
+                                Colors.redAccent.withOpacity(0.8),
+                                Colors.redAccent,
+                              ],
+                              stops: [0.6, 0.85, 1.0],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.redAccent.withOpacity(0.5),
+                                blurRadius: 15,
+                                spreadRadius: 15,
+                                offset: Offset(0, 0),
+                              ),
+                            ],
                           ),
-                          child: _isLoading
-                              ? CircularProgressIndicator(
-                                  color: Colors.white,
-                                )
-                              : Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
-                                    Icon(Icons.send,
-                                        color: Colors.white, size: 40),
-                                    SizedBox(height: 10),
-                                    Text(
-                                      'Kirim',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                          child: Center(
+                            child: Icon(
+                              Icons.touch_app,
+                              color: Colors.white,
+                              size: 50,
+                            ),
+                          ),
                         ),
                       ),
                     ),
