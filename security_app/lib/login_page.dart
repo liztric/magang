@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'security_page.dart';
 import 'user_page.dart';
 
@@ -97,7 +98,13 @@ class LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Laporin App'),
+        title: Text(
+          'Laporin App',
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+        ),
         foregroundColor: const Color.fromARGB(255, 255, 255, 255),
         backgroundColor: const Color.fromARGB(255, 38, 50, 56),
         centerTitle: true,
@@ -108,8 +115,7 @@ class LoginPageState extends State<LoginPage> {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(
-                    'assets/icon/Logo_Esolusindo.png'), // A background image related to home security
+                image: AssetImage('assets/security_background.jpg'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -131,13 +137,15 @@ class LoginPageState extends State<LoginPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const Icon(Icons.home_outlined,
-                            size: 100, color: Colors.blueGrey),
+                            size: 100, color: Color.fromARGB(255, 38, 50, 56)),
                         const SizedBox(height: 20),
                         TextFormField(
                           controller: _usernameController,
                           decoration: InputDecoration(
                             labelText: 'Username',
-                            labelStyle: TextStyle(color: Colors.blueGrey[700]),
+                            labelStyle: GoogleFonts.poppins(
+                              color: Colors.blueGrey[700],
+                            ),
                             prefixIcon: const Icon(Icons.person_outline,
                                 color: Colors.blueGrey),
                             border: OutlineInputBorder(
@@ -156,7 +164,9 @@ class LoginPageState extends State<LoginPage> {
                           controller: _passwordController,
                           decoration: InputDecoration(
                             labelText: 'Password',
-                            labelStyle: TextStyle(color: Colors.blueGrey[700]),
+                            labelStyle: GoogleFonts.poppins(
+                              color: Colors.blueGrey[700],
+                            ),
                             prefixIcon: const Icon(Icons.lock_outline,
                                 color: Colors.blueGrey),
                             border: OutlineInputBorder(
@@ -183,7 +193,10 @@ class LoginPageState extends State<LoginPage> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 15.0, horizontal: 80.0),
                           ),
-                          child: const Text('Login'),
+                          child: Text(
+                            'Login',
+                            style: GoogleFonts.poppins(),
+                          ),
                         ),
                       ],
                     ),

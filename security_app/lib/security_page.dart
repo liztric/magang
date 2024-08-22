@@ -47,14 +47,41 @@ class _SecurityPageState extends State<SecurityPage> {
     }
   }
 
+  Future<void> _updateLaporanStatus(String laporanId, String status,
+      {bool speaker = true}) async {
+    try {
+      final DatabaseReference laporanRef =
+          FirebaseDatabase.instance.ref('laporan/$laporanId');
+      await laporanRef.update({
+        'status': status,
+        'speaker': speaker,
+      });
+      _fetchLaporan(); // Refresh the laporan list
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Laporan status updated to "$status".')),
+      );
+    } catch (e) {
+      print('Error updating laporan status: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to update laporan status.')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Halaman Security - ${widget.username}'),
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.blueGrey[800],
+        centerTitle: true,
       ),
       body: _getPage(),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.blueGrey[800],
+        selectedItemColor: const Color.fromARGB(255, 255, 255, 255),
+        unselectedItemColor: Colors.white70,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -93,32 +120,92 @@ class _SecurityPageState extends State<SecurityPage> {
   Widget _buildHomePage() {
     return _laporanList.isEmpty
         ? const Center(child: Text('Tidak ada laporan baru.'))
-        : ListView.builder(
-            itemCount: _laporanList.length,
-            itemBuilder: (context, index) {
-              final laporan = _laporanList[index];
-              return Card(
-                margin:
-                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                child: ListTile(
-                  title: Text(laporan['category']),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Nama: ${laporan['nama']}'),
-                      Text(
-                          'Deskripsi: ${laporan['deskripsi'] ?? 'Tidak ada deskripsi'}'),
-                      Text('Tanggal: ${laporan['tanggal']}'),
-                      Text('Waktu: ${laporan['waktu']}'),
-                    ],
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  'Laporan Terkini',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
                   ),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () {
-                    // Tambahkan aksi saat laporan ditekan
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _laporanList.length,
+                  itemBuilder: (context, index) {
+                    final laporan = _laporanList[index];
+                    final laporanId = laporan['id']; // Assuming 'id' is a field
+
+                    return Card(
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 16.0),
+                      elevation: 8, // Added elevation for card
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              laporan['category'],
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text('Nama: ${laporan['nama']}'),
+                            Text(
+                                'Deskripsi: ${laporan['deskripsi'] ?? 'Tidak ada deskripsi'}'),
+                            Text('Tanggal: ${laporan['tanggal']}'),
+                            Text('Waktu: ${laporan['waktu']}'),
+                            const SizedBox(height: 16),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      _updateLaporanStatus(laporanId, 'proses',
+                                          speaker: false);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color.fromARGB(
+                                          255, 240, 193, 75),
+                                    ),
+                                    child: const Text('Proses'),
+                                  ),
+                                  const SizedBox(
+                                      width: 8), // Space between buttons
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      _updateLaporanStatus(
+                                          laporanId, 'selesai');
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color.fromARGB(
+                                          255, 62, 216, 57),
+                                    ),
+                                    child: const Text('Sukses'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
                   },
                 ),
-              );
-            },
+              ),
+            ],
           );
   }
 }

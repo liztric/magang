@@ -32,7 +32,6 @@ class _RiwayatPageState extends State<RiwayatPage> {
       Map<String, dynamic> laporanData =
           Map<String, dynamic>.from(snapshot.value as Map);
       laporanData.forEach((key, value) {
-        // Gunakan try-catch untuk menangani data yang tidak lengkap
         try {
           Map<String, dynamic> laporan = Map<String, dynamic>.from(value);
           laporanList.add({
@@ -59,37 +58,52 @@ class _RiwayatPageState extends State<RiwayatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Riwayat Laporan'),
-      ),
-      body: _laporanList.isEmpty
-          ? const Center(child: Text('Tidak ada laporan selesai.'))
-          : ListView.builder(
-              itemCount: _laporanList.length,
-              itemBuilder: (context, index) {
-                final laporan = _laporanList[index];
-                return Card(
-                  margin: const EdgeInsets.symmetric(
-                      vertical: 8.0, horizontal: 16.0),
-                  child: ListTile(
-                    title: Text(laporan['category']),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Nama: ${laporan['nama']}'),
-                        Text('Deskripsi: ${laporan['deskripsi']}'),
-                        Text('Tanggal: ${laporan['tanggal']}'),
-                        Text('Waktu: ${laporan['waktu']}'),
-                      ],
-                    ),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () {
-                      // Tambahkan aksi saat laporan ditekan
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Laporan Selesai',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.blueGrey[800],
+              ),
+            ),
+          ),
+          Expanded(
+            child: _laporanList.isEmpty
+                ? const Center(child: Text('Tidak ada laporan selesai.'))
+                : ListView.builder(
+                    itemCount: _laporanList.length,
+                    itemBuilder: (context, index) {
+                      final laporan = _laporanList[index];
+                      return Card(
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 16.0),
+                        child: ListTile(
+                          title: Text(laporan['category']),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Nama: ${laporan['nama']}'),
+                              Text('Deskripsi: ${laporan['deskripsi']}'),
+                              Text('Tanggal: ${laporan['tanggal']}'),
+                              Text('Waktu: ${laporan['waktu']}'),
+                            ],
+                          ),
+                          trailing: const Icon(Icons.chevron_right),
+                          onTap: () {
+                            // Tambahkan aksi saat laporan ditekan
+                          },
+                        ),
+                      );
                     },
                   ),
-                );
-              },
-            ),
+          ),
+        ],
+      ),
     );
   }
 }

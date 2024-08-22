@@ -29,7 +29,7 @@ class _UserPageState extends State<UserPage> {
       body: _getPage(),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.blueGrey[800],
-        selectedItemColor: Colors.cyanAccent,
+        selectedItemColor: const Color.fromARGB(255, 255, 255, 255),
         unselectedItemColor: Colors.white70,
         items: const [
           BottomNavigationBarItem(
@@ -75,7 +75,7 @@ class UserPageContent extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/icon/Logo_Esolusindo.png'), // Background image
+          image: AssetImage('assets/security_home_bg.jpg'), // Background image
           fit: BoxFit.cover,
         ),
       ),
@@ -136,10 +136,10 @@ class UserPageContent extends StatelessWidget {
   TableRow _buildTableHeader() {
     return TableRow(
       children: [
-        _buildHeaderCell('Icon'),
-        _buildHeaderCell('Name'),
-        _buildHeaderCell('Phone Number'),
-        _buildHeaderCell('Call'),
+        _buildHeaderCell(''),
+        _buildHeaderCell('Nama'),
+        _buildHeaderCell('Nomer Telepon'),
+        _buildHeaderCell('Telp'),
       ],
     );
   }
