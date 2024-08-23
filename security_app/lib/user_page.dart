@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:securityapp/account_page.dart';
 import 'package:securityapp/laporan_page.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class UserPage extends StatefulWidget {
   final String username;
@@ -28,79 +28,40 @@ class _UserPageState extends State<UserPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Welcome, ${widget.username}'),
-        backgroundColor: Colors.blue[900],
+        title: Text(
+          'Welcome, ${widget.username}',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        foregroundColor: Colors.white,
+        backgroundColor: Color.fromARGB(255, 80, 134, 192),
         centerTitle: true,
         leading: const Icon(Icons.shield_outlined, color: Colors.white),
       ),
       body: _getPage(),
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.blue[900],
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 6.0,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              IconButton(
-                icon: Icon(
-                  Icons.star,
-                  color: _selectedIndex == 0 ? Colors.yellow : Colors.white70,
-                ),
-                onPressed: () {
-                  setState(() {
-                    _selectedIndex = 0;
-                  });
-                },
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.bar_chart,
-                  color: _selectedIndex == 1 ? Colors.yellow : Colors.white70,
-                ),
-                onPressed: () {
-                  setState(() {
-                    _selectedIndex = 1;
-                  });
-                },
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.home,
-                  color: _selectedIndex == 2 ? Colors.yellow : Colors.white70,
-                ),
-                onPressed: () {
-                  setState(() {
-                    _selectedIndex = 2;
-                  });
-                },
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.notifications,
-                  color: _selectedIndex == 3 ? Colors.yellow : Colors.white70,
-                ),
-                onPressed: () {
-                  setState(() {
-                    _selectedIndex = 3;
-                  });
-                },
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.settings,
-                  color: _selectedIndex == 4 ? Colors.yellow : Colors.white70,
-                ),
-                onPressed: () {
-                  setState(() {
-                    _selectedIndex = 4;
-                  });
-                },
-              ),
-            ],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_rounded),
+            label: 'Home',
+            backgroundColor: Color.fromARGB(255, 80, 134, 192),
           ),
-        ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.assignment),
+            label: 'Report',
+            backgroundColor: Color.fromARGB(255, 80, 134, 192),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_box),
+            label: 'Account',
+            backgroundColor: Color.fromARGB(255, 80, 134, 192),
+          ),
+        ],
       ),
     );
   }
@@ -153,16 +114,14 @@ class UserPageContent extends StatelessWidget {
         Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage(
-                  'assets/security_background.jpg'), // Tambahkan gambar yang menarik
+              image: AssetImage('assets/login/4.jpg'),
               fit: BoxFit.cover,
             ),
           ),
         ),
         // Layer Transparan agar teks lebih terlihat
         Container(
-          color: Colors.black.withOpacity(
-              0.5), // Overlay semi-transparan untuk memberikan kontras
+          color: Colors.black.withOpacity(0.2), // Overlay semi-transparan
         ),
         // Konten Utama
         Padding(
@@ -176,9 +135,8 @@ class UserPageContent extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: Colors
-                      .white, // Warna putih agar kontras dengan latar belakang
-                ),
+                  color: Color.fromARGB(255, 80, 134, 192),
+                ), // Warna lebih cerah untuk kontras
               ),
               const SizedBox(height: 20),
               Expanded(
@@ -205,20 +163,20 @@ class UserPageContent extends StatelessWidget {
   Widget _buildContactCard(
       BuildContext context, String name, String phoneNumber, int index) {
     return Card(
-      color: Colors.white.withOpacity(
-          0.8), // Kartu semi-transparan agar tetap terlihat di atas latar
+      color: Colors.white.withOpacity(0.8), // Semi-transparan agar terlihat
       elevation: 6,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
       child: ListTile(
-        leading: Icon(Icons.person, color: Colors.blue[900], size: 40),
+        leading: Icon(Icons.person,
+            color: Color.fromARGB(255, 80, 134, 192), size: 40),
         title: Text(
           name,
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: Colors.blue[900],
+            color: Color.fromARGB(255, 80, 134, 192),
           ),
         ),
         subtitle: Text(
@@ -337,7 +295,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
                   return null;
                 },
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
