@@ -225,11 +225,6 @@ class _LaporanPageState extends State<LaporanPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Form Laporan'),
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        elevation: 0,
-      ),
       body: Stack(
         children: [
           Container(
@@ -244,10 +239,11 @@ class _LaporanPageState extends State<LaporanPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Text(
+                  const SizedBox(height: 20),
+                  Text(
                     'Isi laporan keadaan darurat:',
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 28,
                       fontWeight: FontWeight.bold,
                       color: Color.fromARGB(255, 38, 50, 56),
                     ),

@@ -29,43 +29,78 @@ class _UserPageState extends State<UserPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Welcome, ${widget.username}'),
-        foregroundColor: Colors.white,
-        backgroundColor: Colors.blueGrey[900],
+        backgroundColor: Colors.blue[900],
         centerTitle: true,
-        leading: const Icon(Icons.shield_outlined),
+        leading: const Icon(Icons.shield_outlined, color: Colors.white),
       ),
       body: _getPage(),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.blueGrey[800],
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white70,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.blue[900],
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 6.0,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              IconButton(
+                icon: Icon(
+                  Icons.star,
+                  color: _selectedIndex == 0 ? Colors.yellow : Colors.white70,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _selectedIndex = 0;
+                  });
+                },
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.bar_chart,
+                  color: _selectedIndex == 1 ? Colors.yellow : Colors.white70,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _selectedIndex = 1;
+                  });
+                },
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.home,
+                  color: _selectedIndex == 2 ? Colors.yellow : Colors.white70,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _selectedIndex = 2;
+                  });
+                },
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.notifications,
+                  color: _selectedIndex == 3 ? Colors.yellow : Colors.white70,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _selectedIndex = 3;
+                  });
+                },
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.settings,
+                  color: _selectedIndex == 4 ? Colors.yellow : Colors.white70,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _selectedIndex = 4;
+                  });
+                },
+              ),
+            ],
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.report),
-            label: 'Reports',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: 'Account',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _addContact(context);  // Pass context to the addContact method
-        },
-        backgroundColor: Colors.blueGrey[900],
-        child: const Icon(Icons.add),
+        ),
       ),
     );
   }
@@ -83,20 +118,6 @@ class _UserPageState extends State<UserPage> {
           onDelete: _deleteContact,
         );
     }
-  }
-
-  void _addContact(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => ContactFormPage(
-          onSave: (newContact) {
-            setState(() {
-              contacts.add(newContact);
-            });
-          },
-        ),
-      ),
-    );
   }
 
   void _editContact(int index, Map<String, String> updatedContact) {
@@ -126,67 +147,83 @@ class UserPageContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/security_home_bg.jpg'),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            const SizedBox(height: 20),
-            Text(
-              'Emergency Contacts',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                backgroundColor: Colors.blueGrey[900]?.withOpacity(0.7),
-              ),
+    return Stack(
+      children: <Widget>[
+        // Gambar Latar Belakang
+        Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(
+                  'assets/security_background.jpg'), // Tambahkan gambar yang menarik
+              fit: BoxFit.cover,
             ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: ListView.builder(
-                itemCount: contacts.length,
-                itemBuilder: (context, index) {
-                  final contact = contacts[index];
-                  return _buildContactCard(
-                    context, // Pass context here
-                    contact['name']!,
-                    contact['phone']!,
-                    index,
-                  );
-                },
-              ),
-            ),
-          ],
+          ),
         ),
-      ),
+        // Layer Transparan agar teks lebih terlihat
+        Container(
+          color: Colors.black.withOpacity(
+              0.5), // Overlay semi-transparan untuk memberikan kontras
+        ),
+        // Konten Utama
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const SizedBox(height: 20),
+              Text(
+                'Emergency Contacts',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Colors
+                      .white, // Warna putih agar kontras dengan latar belakang
+                ),
+              ),
+              const SizedBox(height: 20),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: contacts.length,
+                  itemBuilder: (context, index) {
+                    final contact = contacts[index];
+                    return _buildContactCard(
+                      context,
+                      contact['name']!,
+                      contact['phone']!,
+                      index,
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _buildContactCard(BuildContext context, String name, String phoneNumber, int index) {
+  Widget _buildContactCard(
+      BuildContext context, String name, String phoneNumber, int index) {
     return Card(
-      elevation: 4,
+      color: Colors.white.withOpacity(
+          0.8), // Kartu semi-transparan agar tetap terlihat di atas latar
+      elevation: 6,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
       child: ListTile(
-        leading: Icon(Icons.person, color: Colors.blueGrey[900], size: 40), // Use a person icon
+        leading: Icon(Icons.person, color: Colors.blue[900], size: 40),
         title: Text(
           name,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
+            color: Colors.blue[900],
           ),
         ),
         subtitle: Text(
           phoneNumber,
-          style: const TextStyle(fontSize: 16, color: Colors.blueGrey),
+          style: TextStyle(fontSize: 16, color: Colors.blueGrey),
         ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
@@ -215,7 +252,7 @@ class UserPageContent extends StatelessWidget {
           ],
         ),
         onTap: () {
-          _makePhoneCall(context, phoneNumber);  // Pass context here
+          _makePhoneCall(context, phoneNumber);
         },
       ),
     );
@@ -265,7 +302,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.contact != null ? 'Edit Contact' : 'Add Contact'),
-        backgroundColor: Colors.blueGrey[900],
+        backgroundColor: Colors.blue[900],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -311,10 +348,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
                     Navigator.of(context).pop();
                   }
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueGrey[900],
-                ),
-                child: Text(widget.contact != null ? 'Save' : 'Add'),
+                child: const Text('Save Contact'),
               ),
             ],
           ),
