@@ -25,36 +25,43 @@ class _SecurityPageState extends State<SecurityPage> {
   }
 
   Future<void> _fetchLaporan() async {
-    final DatabaseReference laporanRef = FirebaseDatabase.instance.ref('laporan');
+    final DatabaseReference laporanRef =
+        FirebaseDatabase.instance.ref('laporan');
 
-    // Fetch laporan dengan status 'belum'
-    DatabaseEvent belumEvent = await laporanRef.orderByChild('status').equalTo('belum').once();
-    // Fetch laporan dengan status 'proses'
-    DatabaseEvent prosesEvent = await laporanRef.orderByChild('status').equalTo('proses').once();
+    DatabaseEvent belumEvent =
+        await laporanRef.orderByChild('status').equalTo('belum').once();
+    DatabaseEvent prosesEvent =
+        await laporanRef.orderByChild('status').equalTo('proses').once();
 
     List<Map<String, dynamic>> laporanBelumList = [];
     List<Map<String, dynamic>> laporanProsesList = [];
 
     if (belumEvent.snapshot.exists) {
-      final laporanData = Map<String, dynamic>.from(belumEvent.snapshot.value as Map<dynamic, dynamic>? ?? {});
+      final laporanData = Map<String, dynamic>.from(
+          belumEvent.snapshot.value as Map<dynamic, dynamic>? ?? {});
       laporanBelumList = laporanData.entries.map((entry) {
         return {
           'id': entry.key,
-          ...Map<String, dynamic>.from(entry.value as Map<dynamic, dynamic> ?? {})
+          ...Map<String, dynamic>.from(
+              entry.value as Map<dynamic, dynamic> ?? {})
         };
       }).toList();
-      laporanBelumList.sort((a, b) => (b['tanggal'] as String).compareTo(a['tanggal'] as String));
+      laporanBelumList.sort(
+          (a, b) => (b['tanggal'] as String).compareTo(a['tanggal'] as String));
     }
 
     if (prosesEvent.snapshot.exists) {
-      final laporanData = Map<String, dynamic>.from(prosesEvent.snapshot.value as Map<dynamic, dynamic>? ?? {});
+      final laporanData = Map<String, dynamic>.from(
+          prosesEvent.snapshot.value as Map<dynamic, dynamic>? ?? {});
       laporanProsesList = laporanData.entries.map((entry) {
         return {
           'id': entry.key,
-          ...Map<String, dynamic>.from(entry.value as Map<dynamic, dynamic> ?? {})
+          ...Map<String, dynamic>.from(
+              entry.value as Map<dynamic, dynamic> ?? {})
         };
       }).toList();
-      laporanProsesList.sort((a, b) => (b['tanggal'] as String).compareTo(a['tanggal'] as String));
+      laporanProsesList.sort(
+          (a, b) => (b['tanggal'] as String).compareTo(a['tanggal'] as String));
     }
 
     setState(() {
@@ -65,20 +72,21 @@ class _SecurityPageState extends State<SecurityPage> {
 
   Future<void> _updateLaporanStatus(String laporanId, String status) async {
     try {
-      final DatabaseReference laporanRef = FirebaseDatabase.instance.ref('laporan/$laporanId');
-      final DatabaseReference speakerRef = FirebaseDatabase.instance.ref('speaker');
+      final DatabaseReference laporanRef =
+          FirebaseDatabase.instance.ref('laporan/$laporanId');
+      final DatabaseReference speakerRef =
+          FirebaseDatabase.instance.ref('speaker');
 
       Map<String, dynamic> updates = {
         'laporan/$laporanId/status': status,
       };
 
-      // Update speaker hanya jika status adalah 'proses'
       if (status == 'proses') {
         updates['speaker'] = false;
       }
 
       await FirebaseDatabase.instance.ref().update(updates);
-      _fetchLaporan(); // Refresh the laporan list
+      _fetchLaporan();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Laporan status updated to "$status".')),
       );
@@ -96,17 +104,24 @@ class _SecurityPageState extends State<SecurityPage> {
       appBar: AppBar(
         title: Text('Halaman Security - ${widget.username}'),
         foregroundColor: Colors.white,
-        backgroundColor: Colors.blueGrey[800],
+        backgroundColor: const Color.fromARGB(255, 80, 134, 192),
         centerTitle: true,
+        leading: const Icon(Icons.shield_outlined, color: Colors.white),
       ),
       body: _getPage(),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.blueGrey[800],
-        selectedItemColor: const Color.fromARGB(255, 255, 255, 255),
+        backgroundColor: const Color.fromARGB(255, 80, 134, 192),
+        selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white70,
+        currentIndex: _selectedIndex,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.home_rounded),
             label: 'Home',
           ),
           BottomNavigationBarItem(
@@ -114,16 +129,10 @@ class _SecurityPageState extends State<SecurityPage> {
             label: 'Riwayat',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
+            icon: Icon(Icons.account_box),
             label: 'Account',
           ),
         ],
-        currentIndex: _selectedIndex,
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
       ),
     );
   }
@@ -169,10 +178,12 @@ class _SecurityPageState extends State<SecurityPage> {
                       isProses = true;
                     }
 
-                    final laporanId = laporan['id'] as String? ?? 'unknown'; // Handle null
+                    final laporanId =
+                        laporan['id'] as String? ?? 'unknown'; // Handle null
 
                     return Card(
-                      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 16.0),
                       elevation: 8, // Added elevation for card
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -184,17 +195,22 @@ class _SecurityPageState extends State<SecurityPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              laporan['category'] as String? ?? 'Tidak ada kategori',
+                              laporan['category'] as String? ??
+                                  'Tidak ada kategori',
                               style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             const SizedBox(height: 8),
-                            Text('Nama: ${laporan['nama'] ?? 'Tidak ada nama'}'),
-                            Text('Deskripsi: ${laporan['deskripsi'] ?? 'Tidak ada deskripsi'}'),
-                            Text('Tanggal: ${laporan['tanggal'] ?? 'Tidak ada tanggal'}'),
-                            Text('Waktu: ${laporan['waktu'] ?? 'Tidak ada waktu'}'),
+                            Text(
+                                'Nama: ${laporan['nama'] ?? 'Tidak ada nama'}'),
+                            Text(
+                                'Deskripsi: ${laporan['deskripsi'] ?? 'Tidak ada deskripsi'}'),
+                            Text(
+                                'Tanggal: ${laporan['tanggal'] ?? 'Tidak ada tanggal'}'),
+                            Text(
+                                'Waktu: ${laporan['waktu'] ?? 'Tidak ada waktu'}'),
                             const SizedBox(height: 16),
                             if (isProses) // Show only if the laporan is in "proses" status
                               Align(
@@ -204,7 +220,8 @@ class _SecurityPageState extends State<SecurityPage> {
                                     _updateLaporanStatus(laporanId, 'selesai');
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color.fromARGB(255, 62, 216, 57),
+                                    backgroundColor:
+                                        const Color.fromARGB(255, 62, 216, 57),
                                   ),
                                   child: const Text('Sukses'),
                                 ),
@@ -217,20 +234,25 @@ class _SecurityPageState extends State<SecurityPage> {
                                   children: [
                                     ElevatedButton(
                                       onPressed: () {
-                                        _updateLaporanStatus(laporanId, 'proses');
+                                        _updateLaporanStatus(
+                                            laporanId, 'proses');
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color.fromARGB(255, 240, 193, 75),
+                                        backgroundColor: const Color.fromARGB(
+                                            255, 240, 193, 75),
                                       ),
                                       child: const Text('Proses'),
                                     ),
-                                    const SizedBox(width: 8), // Space between buttons
+                                    const SizedBox(
+                                        width: 8), // Space between buttons
                                     ElevatedButton(
                                       onPressed: () {
-                                        _updateLaporanStatus(laporanId, 'selesai');
+                                        _updateLaporanStatus(
+                                            laporanId, 'selesai');
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color.fromARGB(255, 62, 216, 57),
+                                        backgroundColor: const Color.fromARGB(
+                                            255, 62, 216, 57),
                                       ),
                                       child: const Text('Sukses'),
                                     ),
