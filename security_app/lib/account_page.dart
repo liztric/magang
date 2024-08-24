@@ -92,10 +92,13 @@ class _AccountPageState extends State<AccountPage>
             decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage(
-                    'assets/background.jpg'), // Ganti dengan gambar latar belakang Anda
+                    'assets/login/1.jpg'), // Ganti dengan gambar latar belakang Anda
                 fit: BoxFit.cover,
               ),
             ),
+          ),
+          Container(
+          color: Colors.black.withOpacity(0.2), // Overlay semi-transparan
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
@@ -104,7 +107,7 @@ class _AccountPageState extends State<AccountPage>
               children: <Widget>[
                 const SizedBox(height: 20),
                 Text(
-                  'Account',
+                  'Informasi akun',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 28,
@@ -139,7 +142,7 @@ class _AccountPageState extends State<AccountPage>
                                         CrossAxisAlignment.start,
                                     children: <Widget>[
                                       const Text(
-                                        'Informasi Akun',
+                                        'Akun',
                                         style: TextStyle(
                                           color:
                                               Color.fromARGB(255, 58, 60, 61),
