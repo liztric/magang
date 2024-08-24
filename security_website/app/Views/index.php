@@ -113,6 +113,7 @@
                         <th scope="col">Deskripsi</th>
                         <th scope="col">Category</th>
                         <th scope="col">Tanggal dan Waktu</th>
+                        <th scope="col">Status</th> <!-- Tambahkan kolom Status -->
                         <th scope="col">Aksi</th>
                     </tr>
                 </thead>
@@ -154,6 +155,7 @@
                                 <td>${row[1].deskripsi || '-'}</td>
                                 <td>${row[1].category || '-'}</td>
                                 <td>${row[1].tanggal || '-'} ${row[1].waktu || '-'}</td>
+                                <td>${row[1].status || '-'}</td> <!-- Tambahkan data Status -->
                                 <td>
                                     <button class="action-btn" onclick="deleteData('${row[0]}')">
                                         <img src="sampah.png" alt="Hapus" />
@@ -192,7 +194,8 @@
                 deskripsi: document.getElementById("deskripsi").value,
                 tanggal: now.toISOString().split('T')[0], // Simpan tanggal saja dalam format YYYY-MM-DD
                 waktu: now.toTimeString().split(' ')[0], // Simpan waktu saja dalam format HH:MM:SS
-                category: document.getElementById("category").value
+                category: document.getElementById("category").value,
+                status: "Pending" // Tambahkan status default jika diperlukan
             };
 
             fetch(databaseUrl, {
