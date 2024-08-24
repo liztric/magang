@@ -230,7 +230,7 @@ class _LaporanPageState extends State<LaporanPage> {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/background.jpg'), // Background image
+                image: AssetImage('assets/login/2.jpg'), // Background image
                 fit: BoxFit.cover,
               ),
             ),
