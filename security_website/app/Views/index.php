@@ -8,18 +8,75 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        body {
+            background-color: #f7f7f7;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar-dark .navbar-nav .nav-link {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .table {
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
         .action-btn {
             transition: transform 0.3s ease, opacity 0.3s ease;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
+            background-color: transparent;
+        }
+
+        .action-btn img {
+            max-width: 24px;
         }
 
         .action-btn:hover {
-            transform: scale(1.1);
+            transform: scale(1.2);
             opacity: 0.8;
         }
 
         .action-btn:active {
             transform: scale(0.9);
             opacity: 0.6;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .table th {
+            background-color: #007bff;
+            color: #fff;
+            text-align: center;
+        }
+
+        .table td {
+            text-align: center;
+        }
+
+        .table td img {
+            width: 30px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -46,22 +103,24 @@
 
     <div class="container mt-5">
         <h2 class="text-center mb-4">Dashboard Riwayat Laporan</h2>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Nama</th>
-                    <th scope="col">Alamat</th>
-                    <th scope="col">Deskripsi</th>
-                    <th scope="col">Category</th>
-                    <th scope="col">Tanggal dan Waktu</th>
-                    <th scope="col">Aksi</th> <!-- Kolom baru untuk aksi -->
-                </tr>
-            </thead>
-            <tbody id="tbody">
-                <!-- Data will be dynamically inserted here -->
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nama</th>
+                        <th scope="col">Alamat</th>
+                        <th scope="col">Deskripsi</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Tanggal dan Waktu</th>
+                        <th scope="col">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody">
+                    <!-- Data will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- Bootstrap JS -->
@@ -96,7 +155,9 @@
                                 <td>${row[1].category || '-'}</td>
                                 <td>${row[1].tanggal || '-'} ${row[1].waktu || '-'}</td>
                                 <td>
-                                    <img src="sampah.png" alt="Hapus" class="action-btn" style="cursor:pointer;" width="50" onclick="deleteData('${row[0]}')" />
+                                    <button class="action-btn" onclick="deleteData('${row[0]}')">
+                                        <img src="sampah.png" alt="Hapus" />
+                                    </button>
                                 </td>
                             </tr>
                             `;

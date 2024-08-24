@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
     getData();
     document.getElementById("registerForm").addEventListener("submit", function(event) {
         event.preventDefault(); // Prevent the default form submission
-        createData(); // Call the createData function
+        checkUsernameAndCreateData(); // Call the checkUsernameAndCreateData function
     });
 });
 
@@ -50,6 +50,34 @@ function getData() {
         });
 }
 
+function checkUsernameAndCreateData() {
+    // Check if the username already exists
+    fetch("https://esolusindosecurity-default-rtdb.firebaseio.com/user.json?auth=05xW10cmdxUBIBwXw4i5edLZy06MbpMRelL5QGf2")
+        .then((res) => res.json())
+        .then((data) => {
+            let usernameExists = false;
+
+            for (let key in data) {
+                if (data[key].username === usernameV.value) {
+                    usernameExists = true;
+                    break;
+                }
+            }
+
+            if (usernameExists) {
+                // Username already exists
+                document.getElementById("message").textContent = "Username sudah terdaftar. Silakan pilih username lain.";
+                document.getElementById("message").classList.add('text-danger');
+            } else {
+                // Username is unique, proceed with registration
+                createData();
+            }
+        })
+        .catch((error) => {
+            console.error('Error checking username:', error);
+        });
+}
+
 function createData() {
     let roleV = document.querySelector('input[name="role"]:checked'); // Ambil elemen role yang dipilih
 
@@ -76,6 +104,8 @@ function createData() {
     .then((res) => res.json())
     .then(() => {
         document.getElementById("message").textContent = "Registration successful!";
+        document.getElementById("message").classList.remove('text-danger');
+        document.getElementById("message").classList.add('text-success');
         namaV.value = "";
         usernameV.value = "";
         passwordV.value = "";
