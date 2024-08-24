@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:securityapp/account_page.dart';
 import 'package:securityapp/laporan_page.dart';
@@ -15,14 +16,63 @@ class UserPage extends StatefulWidget {
 
 class _UserPageState extends State<UserPage> {
   int _selectedIndex = 0;
-  List<Map<String, String>> contacts = [
-    {"name": "Police", "phone": "089789876789"},
-    {"name": "Developer", "phone": "089789876789"},
-    {"name": "Hospital", "phone": "089789876789"},
-    {"name": "Security", "phone": "089789876789"},
-    {"name": "Fire Brigade", "phone": "089789876789"},
-    {"name": "Ambulance", "phone": "089789876789"},
-  ];
+  List<Map<String, String>> contacts = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchContacts();
+  }
+
+  Future<void> _fetchContacts() async {
+    final DatabaseReference contactsRef =
+        FirebaseDatabase.instance.ref('user/${widget.userId}/contacts');
+
+    contactsRef.onValue.listen((event) {
+      final data = event.snapshot.value as Map<dynamic, dynamic>?;
+      if (data != null) {
+        List<Map<String, String>> newContacts = [];
+        data.forEach((key, value) {
+          final contact = Map<String, String>.from(value);
+          contact['key'] = key; // Simpan key di dalam map
+          newContacts.add(contact);
+        });
+        setState(() {
+          contacts = newContacts;
+        });
+      }
+    });
+  }
+
+  void _addContact(Map<String, String> newContact) {
+    final DatabaseReference contactsRef =
+        FirebaseDatabase.instance.ref('user/${widget.userId}/contacts');
+    contactsRef.push().set(newContact);
+  }
+
+  void _editContact(int index, Map<String, String> updatedContact) {
+    final String? key = contacts[index]['key']; // Menggunakan String?
+    if (key != null) {
+      final DatabaseReference contactRef =
+          FirebaseDatabase.instance.ref('user/${widget.userId}/contacts/$key');
+      contactRef.update(updatedContact);
+    } else {
+      // Handle error jika key tidak ditemukan
+      print("Error: Key is null, cannot update contact.");
+    }
+  }
+
+  void _deleteContact(int index) {
+    final String? key = contacts[index]['key']; // Menggunakan String?
+    if (key != null) {
+      final DatabaseReference contactRef =
+          FirebaseDatabase.instance.ref('user/${widget.userId}/contacts/$key');
+      contactRef.remove();
+    } else {
+      // Handle error jika key tidak ditemukan
+      print("Error: Key is null, cannot delete contact.");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +113,21 @@ class _UserPageState extends State<UserPage> {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => ContactFormPage(
+                onSave: (newContact) {
+                  _addContact(newContact);
+                },
+              ),
+            ),
+          );
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Color.fromARGB(255, 80, 134, 192),
+      ),
     );
   }
 
@@ -79,18 +144,6 @@ class _UserPageState extends State<UserPage> {
           onDelete: _deleteContact,
         );
     }
-  }
-
-  void _editContact(int index, Map<String, String> updatedContact) {
-    setState(() {
-      contacts[index] = updatedContact;
-    });
-  }
-
-  void _deleteContact(int index) {
-    setState(() {
-      contacts.removeAt(index);
-    });
   }
 }
 
@@ -135,7 +188,7 @@ class UserPageContent extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: Color.fromARGB(255, 80, 134, 192),
+                  color: Color(0xFFFFFFFF),
                 ), // Warna lebih cerah untuk kontras
               ),
               const SizedBox(height: 20),
@@ -249,64 +302,71 @@ class _ContactFormPageState extends State<ContactFormPage> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(
-        text: widget.contact != null ? widget.contact!['name'] : '');
-    _phoneController = TextEditingController(
-        text: widget.contact != null ? widget.contact!['phone'] : '');
+    _nameController = TextEditingController(text: widget.contact?['name']);
+    _phoneController = TextEditingController(text: widget.contact?['phone']);
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _phoneController.dispose();
+    super.dispose();
+  }
+
+  void _save() {
+    if (_formKey.currentState?.validate() ?? false) {
+      final contact = {
+        'name': _nameController.text,
+        'phone': _phoneController.text,
+      };
+      widget.onSave(contact);
+      Navigator.of(context).pop();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.contact != null ? 'Edit Contact' : 'Add Contact'),
-        backgroundColor: Colors.blue[900],
+        title: Text(widget.contact == null ? 'Add Contact' : 'Edit Contact'),
+        backgroundColor: Color.fromARGB(255, 80, 134, 192),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
-            children: [
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
               TextFormField(
                 controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                  border: OutlineInputBorder(),
-                ),
+                decoration: const InputDecoration(labelText: 'Name'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a name';
+                    return 'Please enter name';
                   }
                   return null;
                 },
               ),
-              const SizedBox(height: 16),
               TextFormField(
                 controller: _phoneController,
-                decoration: const InputDecoration(
-                  labelText: 'Phone Number',
-                  border: OutlineInputBorder(),
-                ),
+                decoration: const InputDecoration(labelText: 'Phone Number'),
+                keyboardType: TextInputType.phone,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a phone number';
+                    return 'Please enter phone number';
                   }
                   return null;
                 },
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    widget.onSave({
-                      'name': _nameController.text,
-                      'phone': _phoneController.text,
-                    });
-                    Navigator.of(context).pop();
-                  }
-                },
-                child: const Text('Save Contact'),
+                onPressed: _save,
+                child: Text(widget.contact == null ? 'Add Contact' : 'Save'),
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Color.fromARGB(255, 80, 134, 192),
+                ),
               ),
             ],
           ),

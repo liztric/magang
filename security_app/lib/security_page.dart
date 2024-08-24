@@ -16,6 +16,7 @@ class SecurityPage extends StatefulWidget {
 class _SecurityPageState extends State<SecurityPage> {
   int _selectedIndex = 0;
   List<Map<String, dynamic>> _laporanList = [];
+  List<Map<String, dynamic>> _prosesLaporanList = [];
 
   @override
   void initState() {
@@ -24,39 +25,59 @@ class _SecurityPageState extends State<SecurityPage> {
   }
 
   Future<void> _fetchLaporan() async {
-    final DatabaseReference laporanRef =
-        FirebaseDatabase.instance.ref('laporan');
-    DatabaseEvent event =
-        await laporanRef.orderByChild('status').equalTo('belum').once();
+    final DatabaseReference laporanRef = FirebaseDatabase.instance.ref('laporan');
 
-    if (event.snapshot.exists) {
-      final laporanData =
-          Map<String, dynamic>.from(event.snapshot.value as Map);
-      List<Map<String, dynamic>> laporanList = laporanData.entries.map((entry) {
-        // Menggunakan key Firebase sebagai laporanId
-        return {'id': entry.key, ...Map<String, dynamic>.from(entry.value as Map)};
+    // Fetch laporan dengan status 'belum'
+    DatabaseEvent belumEvent = await laporanRef.orderByChild('status').equalTo('belum').once();
+    // Fetch laporan dengan status 'proses'
+    DatabaseEvent prosesEvent = await laporanRef.orderByChild('status').equalTo('proses').once();
+
+    List<Map<String, dynamic>> laporanBelumList = [];
+    List<Map<String, dynamic>> laporanProsesList = [];
+
+    if (belumEvent.snapshot.exists) {
+      final laporanData = Map<String, dynamic>.from(belumEvent.snapshot.value as Map<dynamic, dynamic>? ?? {});
+      laporanBelumList = laporanData.entries.map((entry) {
+        return {
+          'id': entry.key,
+          ...Map<String, dynamic>.from(entry.value as Map<dynamic, dynamic> ?? {})
+        };
       }).toList();
-
-      // Urutkan laporan berdasarkan tanggal terbaru
-      laporanList.sort((a, b) => b['tanggal'].compareTo(a['tanggal']));
-
-      setState(() {
-        _laporanList = laporanList;
-      });
-    } else {
-      print('Tidak ada laporan dengan status "belum".');
+      laporanBelumList.sort((a, b) => (b['tanggal'] as String).compareTo(a['tanggal'] as String));
     }
+
+    if (prosesEvent.snapshot.exists) {
+      final laporanData = Map<String, dynamic>.from(prosesEvent.snapshot.value as Map<dynamic, dynamic>? ?? {});
+      laporanProsesList = laporanData.entries.map((entry) {
+        return {
+          'id': entry.key,
+          ...Map<String, dynamic>.from(entry.value as Map<dynamic, dynamic> ?? {})
+        };
+      }).toList();
+      laporanProsesList.sort((a, b) => (b['tanggal'] as String).compareTo(a['tanggal'] as String));
+    }
+
+    setState(() {
+      _laporanList = laporanBelumList;
+      _prosesLaporanList = laporanProsesList;
+    });
   }
 
-  Future<void> _updateLaporanStatus(String laporanId, String status,
-      {bool speaker = true}) async {
+  Future<void> _updateLaporanStatus(String laporanId, String status) async {
     try {
-      final DatabaseReference laporanRef =
-          FirebaseDatabase.instance.ref('laporan/$laporanId');
-      await laporanRef.update({
-        'status': status,
-        'speaker': speaker,
-      });
+      final DatabaseReference laporanRef = FirebaseDatabase.instance.ref('laporan/$laporanId');
+      final DatabaseReference speakerRef = FirebaseDatabase.instance.ref('speaker');
+
+      Map<String, dynamic> updates = {
+        'laporan/$laporanId/status': status,
+      };
+
+      // Update speaker hanya jika status adalah 'proses'
+      if (status == 'proses') {
+        updates['speaker'] = false;
+      }
+
+      await FirebaseDatabase.instance.ref().update(updates);
       _fetchLaporan(); // Refresh the laporan list
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Laporan status updated to "$status".')),
@@ -119,7 +140,7 @@ class _SecurityPageState extends State<SecurityPage> {
   }
 
   Widget _buildHomePage() {
-    return _laporanList.isEmpty
+    return _laporanList.isEmpty && _prosesLaporanList.isEmpty
         ? const Center(child: Text('Tidak ada laporan baru.'))
         : Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,69 +157,86 @@ class _SecurityPageState extends State<SecurityPage> {
               ),
               Expanded(
                 child: ListView.builder(
-                  itemCount: _laporanList.length,
+                  itemCount: _laporanList.length + _prosesLaporanList.length,
                   itemBuilder: (context, index) {
-                    final laporan = _laporanList[index];
-                    final laporanId = laporan['id']; // Menggunakan key sebagai ID
+                    Map<String, dynamic> laporan;
+                    bool isProses = false;
+
+                    if (index < _laporanList.length) {
+                      laporan = _laporanList[index];
+                    } else {
+                      laporan = _prosesLaporanList[index - _laporanList.length];
+                      isProses = true;
+                    }
+
+                    final laporanId = laporan['id'] as String? ?? 'unknown'; // Handle null
 
                     return Card(
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 16.0),
+                      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                       elevation: 8, // Added elevation for card
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
+                      color: isProses ? Colors.blue[100] : null,
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              laporan['category'],
+                              laporan['category'] as String? ?? 'Tidak ada kategori',
                               style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             const SizedBox(height: 8),
-                            Text('Nama: ${laporan['nama']}'),
-                            Text(
-                                'Deskripsi: ${laporan['deskripsi'] ?? 'Tidak ada deskripsi'}'),
-                            Text('Tanggal: ${laporan['tanggal']}'),
-                            Text('Waktu: ${laporan['waktu']}'),
+                            Text('Nama: ${laporan['nama'] ?? 'Tidak ada nama'}'),
+                            Text('Deskripsi: ${laporan['deskripsi'] ?? 'Tidak ada deskripsi'}'),
+                            Text('Tanggal: ${laporan['tanggal'] ?? 'Tidak ada tanggal'}'),
+                            Text('Waktu: ${laporan['waktu'] ?? 'Tidak ada waktu'}'),
                             const SizedBox(height: 16),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      _updateLaporanStatus(laporanId, 'proses',
-                                          speaker: false);
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color.fromARGB(
-                                          255, 240, 193, 75),
-                                    ),
-                                    child: const Text('Proses'),
+                            if (isProses) // Show only if the laporan is in "proses" status
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    _updateLaporanStatus(laporanId, 'selesai');
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color.fromARGB(255, 62, 216, 57),
                                   ),
-                                  const SizedBox(
-                                      width: 8), // Space between buttons
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      _updateLaporanStatus(
-                                          laporanId, 'selesai');
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color.fromARGB(
-                                          255, 62, 216, 57),
-                                    ),
-                                    child: const Text('Sukses'),
-                                  ),
-                                ],
+                                  child: const Text('Sukses'),
+                                ),
                               ),
-                            ),
+                            if (!isProses) // Show only if the laporan is not in "proses" status
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        _updateLaporanStatus(laporanId, 'proses');
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color.fromARGB(255, 240, 193, 75),
+                                      ),
+                                      child: const Text('Proses'),
+                                    ),
+                                    const SizedBox(width: 8), // Space between buttons
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        _updateLaporanStatus(laporanId, 'selesai');
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color.fromARGB(255, 62, 216, 57),
+                                      ),
+                                      child: const Text('Sukses'),
+                                    ),
+                                  ],
+                                ),
+                              ),
                           ],
                         ),
                       ),
