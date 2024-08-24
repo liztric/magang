@@ -92,13 +92,13 @@ class _AccountPageState extends State<AccountPage>
             decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage(
-                    'assets/login/1.jpg'), // Ganti dengan gambar latar belakang Anda
+                    'assets/login/4.jpg'), // Ganti dengan gambar latar belakang Anda
                 fit: BoxFit.cover,
               ),
             ),
           ),
           Container(
-          color: Colors.black.withOpacity(0.2), // Overlay semi-transparan
+            color: Colors.black.withOpacity(0.1), // Overlay semi-transparan
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
@@ -111,7 +111,7 @@ class _AccountPageState extends State<AccountPage>
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 28,
-                    color: const Color.fromARGB(255, 55, 71, 79),
+                    color: Color.fromARGB(255, 80, 134, 192),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -230,10 +230,10 @@ class _AccountPageState extends State<AccountPage>
                                     decoration: BoxDecoration(
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.red.withOpacity(0.5),
+                                          color: Colors.red.withOpacity(0.2),
                                           spreadRadius: 5,
-                                          blurRadius: 10,
-                                          offset: const Offset(0, 2),
+                                          blurRadius: 5,
+                                          offset: const Offset(0, 1),
                                         ),
                                       ],
                                     ),

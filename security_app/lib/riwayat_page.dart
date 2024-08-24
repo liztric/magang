@@ -58,49 +58,68 @@ class _RiwayatPageState extends State<RiwayatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              'Laporan Selesai',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.blueGrey[800],
+          // Background image
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    'assets/login/3.jpg'), // Replace with your background image
+                fit: BoxFit.cover,
               ),
             ),
           ),
-          Expanded(
-            child: _laporanList.isEmpty
-                ? const Center(child: Text('Tidak ada laporan selesai.'))
-                : ListView.builder(
-                    itemCount: _laporanList.length,
-                    itemBuilder: (context, index) {
-                      final laporan = _laporanList[index];
-                      return Card(
-                        margin: const EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 16.0),
-                        child: ListTile(
-                          title: Text(laporan['category']),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Nama: ${laporan['nama']}'),
-                              Text('Deskripsi: ${laporan['deskripsi']}'),
-                              Text('Tanggal: ${laporan['tanggal']}'),
-                              Text('Waktu: ${laporan['waktu']}'),
-                            ],
-                          ),
-                          trailing: const Icon(Icons.chevron_right),
-                          onTap: () {
-                            // Tambahkan aksi saat laporan ditekan
-                          },
-                        ),
-                      );
-                    },
+          // Dark overlay
+          Container(
+            color: Colors.black.withOpacity(0.1),
+          ),
+          // Main content
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  'Laporan Selesai',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 80, 134, 192),
                   ),
+                ),
+              ),
+              Expanded(
+                child: _laporanList.isEmpty
+                    ? const Center(child: Text('Tidak ada laporan selesai.'))
+                    : ListView.builder(
+                        itemCount: _laporanList.length,
+                        itemBuilder: (context, index) {
+                          final laporan = _laporanList[index];
+                          return Card(
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 8.0, horizontal: 16.0),
+                            child: ListTile(
+                              title: Text(laporan['category']),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Nama: ${laporan['nama']}'),
+                                  Text('Deskripsi: ${laporan['deskripsi']}'),
+                                  Text('Tanggal: ${laporan['tanggal']}'),
+                                  Text('Waktu: ${laporan['waktu']}'),
+                                ],
+                              ),
+                              trailing: const Icon(Icons.chevron_right),
+                              onTap: () {
+                                // Tambahkan aksi saat laporan ditekan
+                              },
+                            ),
+                          );
+                        },
+                      ),
+              ),
+            ],
           ),
         ],
       ),

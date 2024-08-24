@@ -230,129 +230,132 @@ class _LaporanPageState extends State<LaporanPage> {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/login/2.jpg'), // Background image
+                image: AssetImage('assets/login/3.jpg'), // Background image
                 fit: BoxFit.cover,
               ),
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  const SizedBox(height: 20),
-                  Text(
-                    'Isi laporan keadaan darurat:',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Color.fromARGB(255, 38, 50, 56),
-                    ),
+          ),
+          Container(
+            color: Colors.black.withOpacity(0.1), // Overlay semi-transparan
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                const SizedBox(height: 20),
+                Text(
+                  'Isi laporan keadaan darurat:',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 80, 134, 192),
                   ),
-                  const SizedBox(height: 20),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          spreadRadius: 2,
-                          blurRadius: 5,
-                          offset: Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: DropdownButton<String>(
-                      value: _selectedCategory,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          _selectedCategory = newValue!;
-                        });
-                      },
-                      items: <String>[
-                        'Emergency',
-                        'Maling',
-                        'Kebakaran',
-                        'Butuh Pertolongan',
-                        'Hewan Buas',
-                        'Orang Mencurigakan',
-                        'Lainnya'
-                      ].map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      isExpanded: true,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          spreadRadius: 2,
-                          blurRadius: 5,
-                          offset: Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: TextField(
-                      controller: _deskripsiController,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        hintText: 'Deskripsi (opsional)',
-                        contentPadding: EdgeInsets.all(10),
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.8),
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: Offset(0, 3),
                       ),
-                      maxLines: 3,
-                    ),
+                    ],
                   ),
-                  const SizedBox(height: 20),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: GestureDetector(
-                        onTap: _showConfirmationDialog,
-                        child: Container(
-                          width: 150,
-                          height: 150,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: RadialGradient(
-                              colors: [
-                                Colors.redAccent.withOpacity(0.6),
-                                Colors.redAccent.withOpacity(0.8),
-                                Colors.redAccent,
-                              ],
-                              stops: [0.6, 0.85, 1.0],
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.redAccent.withOpacity(0.5),
-                                blurRadius: 15,
-                                spreadRadius: 15,
-                                offset: Offset(0, 0),
-                              ),
+                  child: DropdownButton<String>(
+                    value: _selectedCategory,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedCategory = newValue!;
+                      });
+                    },
+                    items: <String>[
+                      'Emergency',
+                      'Maling',
+                      'Kebakaran',
+                      'Butuh Pertolongan',
+                      'Hewan Buas',
+                      'Orang Mencurigakan',
+                      'Lainnya'
+                    ].map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    isExpanded: true,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.8),
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: TextField(
+                    controller: _deskripsiController,
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      hintText: 'Deskripsi (opsional)',
+                      contentPadding: EdgeInsets.all(10),
+                    ),
+                    maxLines: 3,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: GestureDetector(
+                      onTap: _showConfirmationDialog,
+                      child: Container(
+                        width: 150,
+                        height: 150,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: RadialGradient(
+                            colors: [
+                              Colors.redAccent.withOpacity(0.6),
+                              Colors.redAccent.withOpacity(0.8),
+                              Colors.redAccent,
                             ],
+                            stops: [0.6, 0.85, 1.0],
                           ),
-                          child: Center(
-                            child: Icon(
-                              Icons.touch_app,
-                              color: Colors.white,
-                              size: 50,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.redAccent.withOpacity(0.5),
+                              blurRadius: 15,
+                              spreadRadius: 15,
+                              offset: Offset(0, 0),
                             ),
+                          ],
+                        ),
+                        child: Center(
+                          child: Icon(
+                            Icons.touch_app,
+                            color: Colors.white,
+                            size: 50,
                           ),
                         ),
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],

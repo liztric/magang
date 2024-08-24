@@ -101,14 +101,39 @@ class _SecurityPageState extends State<SecurityPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Halaman Security - ${widget.username}'),
-        foregroundColor: Colors.white,
-        backgroundColor: const Color.fromARGB(255, 80, 134, 192),
-        centerTitle: true,
-        leading: const Icon(Icons.shield_outlined, color: Colors.white),
+      body: Stack(
+        children: [
+          // Background image
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    'assets/login/2.jpg'), // Replace with your background image
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          // Dark overlay
+          Container(
+            color: Colors.black.withOpacity(0.1),
+          ),
+          // Main content
+          Column(
+            children: [
+              AppBar(
+                title: Text('Halaman Security - ${widget.username}'),
+                foregroundColor: Colors.white,
+                backgroundColor: const Color.fromARGB(255, 80, 134, 192),
+                centerTitle: true,
+                leading: const Icon(Icons.shield_outlined, color: Colors.white),
+              ),
+              Expanded(
+                child: _getPage(),
+              ),
+            ],
+          ),
+        ],
       ),
-      body: _getPage(),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: const Color.fromARGB(255, 80, 134, 192),
         selectedItemColor: Colors.white,
@@ -159,8 +184,9 @@ class _SecurityPageState extends State<SecurityPage> {
                 child: Text(
                   'Laporan Terkini',
                   style: const TextStyle(
-                    fontSize: 24,
+                    fontSize: 28,
                     fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 80, 134, 192),
                   ),
                 ),
               ),

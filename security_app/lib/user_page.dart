@@ -89,6 +89,9 @@ class _UserPageState extends State<UserPage> {
       ),
       body: _getPage(),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: const Color.fromARGB(255, 80, 134, 192),
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white70,
         currentIndex: _selectedIndex,
         onTap: (index) {
           setState(() {
@@ -167,14 +170,14 @@ class UserPageContent extends StatelessWidget {
         Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/login/4.jpg'),
+              image: AssetImage('assets/login/2.jpg'),
               fit: BoxFit.cover,
             ),
           ),
         ),
         // Layer Transparan agar teks lebih terlihat
         Container(
-          color: Colors.black.withOpacity(0.2), // Overlay semi-transparan
+          color: Colors.black.withOpacity(0.1), // Overlay semi-transparan
         ),
         // Konten Utama
         Padding(
@@ -188,7 +191,7 @@ class UserPageContent extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFFFFFFFF),
+                  color: Color.fromARGB(255, 80, 134, 192),
                 ), // Warna lebih cerah untuk kontras
               ),
               const SizedBox(height: 20),
