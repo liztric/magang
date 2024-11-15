@@ -62,7 +62,7 @@
     </nav>
 
   <div class="container mt-5">
-    <h1>Security System</h1>
+    <h1>Daftar User</h1>
     <div class="table-responsive">
       <table class="table table-striped">
         <thead>
