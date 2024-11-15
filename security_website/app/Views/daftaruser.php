@@ -56,7 +56,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="daftaruser">Daftar Pengguna</a>
                     </li>
-                </ul>
+                </ul> 
             </div>
         </div>
     </nav>
